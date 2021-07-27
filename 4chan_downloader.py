@@ -6,6 +6,7 @@
 try:
 	import requests, time, sys
 	from bs4 import BeautifulSoup
+	from colorama import Fore, Style
 except Exception:
 	exit(" [!] Error importing necesary modules: requests, random, string, time, bs4, sys")
 
@@ -14,34 +15,42 @@ useTorProxy = False             #  << Put here True or False
 debugPrint = False              #  << Put here True or False
 #################################
 
-if useTorProxy == False:
-	proxies = ""
-elif useTorProxy == True:
-	proxies = {'http': 'socks5://127.0.0.1:9150', 'https': 'socks5://127.0.0.1:9150'}
-else:
-	print()
-	print(" [!] Error. Invalid proxy. Exiting...")
-	print()
-	exit(1)
+def check_variable_types():
+	if type(useTorProxy) is not bool:
+		exit(" [!] The variable 'useTorProxy' must be a boolean.")
+	elif type(debugPrint) is not bool:
+		exit(" [!] The variable 'debugPrint' must be a boolean.")
 
 def banner():
-	print("   __ __       __              ")
+	print(f"{Style.BRIGHT}{Fore.GREEN}   __ __       __              ")
 	print("  / // / _____/ /_  ____ _____ ")
 	print(" / // /_/ ___/ __ \\/ __ `/ __ \\")
 	print("/__  __/ /__/ / / / /_/ / / / /")
-	print("  /_/  \\___/_/ /_/\\__,_/_/ /_/  Downloader")
+	print(f"  /_/  \\___/_/ /_/\\__,_/_/ /_/  {Style.RESET_ALL}{Fore.GREEN}Downloader{Style.RESET_ALL}")
 	print()
 
+
 def main():
+	check_variable_types()
 	banner()
+
+	if useTorProxy == False:
+		proxies = ""
+	elif useTorProxy == True:
+		proxies = {'http': 'socks5://127.0.0.1:9150', 'https': 'socks5://127.0.0.1:9150'}
+		try:
+		    requests.get("https://4chan.org/", proxies=proxies)
+		except Exception:
+		    exit(f" {Style.RESET_ALL}{Fore.RED}[!] We could not verify the proxies. Make sure tor is running.{Style.RESET_ALL}")
+
 	try:
-		board = input(" [i] Welcome to 4chan downloader! Type the board name: ")
+		board = input(f" {Style.BRIGHT}{Fore.BLUE}[i] Welcome to 4chan downloader! Type the board name: {Style.RESET_ALL}").lower()
 	except KeyboardInterrupt:
 		print()
-		print(" [!] Detected Ctrl+C. Exiting...")
+		print(f"{Style.RESET_ALL}{Fore.RED} [!] Detected Ctrl+C. Exiting...{Style.RESET_ALL}")
 		print()
 		exit(1)
-	print("     Starting at "+ time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()))
+	print(f"{Style.RESET_ALL}{Fore.BLUE}     Starting at "+ time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()) + f"{Style.RESET_ALL}")
 	with open("4chan_debug.log", "a") as DebugLog:  # Append to the log file
 		DebugLog.write("[%s] User started.\n" % time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()))
 	print()
@@ -53,6 +62,8 @@ def main():
 			if pageNumber == 1:
 				URL = "https://boards.4channel.org/" + board + "/"
 			r = requests.get(URL, proxies=proxies, allow_redirects=True)
+			if "Attention Required! | Cloudflare" in r.text:
+				exit(f" {Style.RESET_ALL}{Fore.RED}[!] Cloudflare captcha needed. Exiting...{Style.RESET_ALL}")
 			souped = BeautifulSoup(r.text, 'html.parser')
 			img_tags = souped.find_all('img')
 			for img in img_tags:
@@ -63,8 +74,7 @@ def main():
 					if "http" not in img_scr:
 						img_scr = f"https:{img_scr}"
 						img_id = img_scr.split("/")[-1].split(".")[0].replace("s", "")
-						sys.stdout.write(" [+] Downloading " + img_id + "                                              ")
-						sys.stdout.write('\b'*90)
+						sys.stdout.write(f"\r {Style.RESET_ALL}{Style.BRIGHT}[{Fore.GREEN}+{Style.RESET_ALL}{Style.BRIGHT}] Downloading {Style.RESET_ALL}{Fore.GREEN}" + img_id + f"{Style.RESET_ALL}")
 						sys.stdout.flush()
 						img_url = "https://i.4cdn.org/" + board + "/" + img_id + ".jpg"
 						r2 = requests.get(img_url)
@@ -75,7 +85,7 @@ def main():
 
 	except KeyboardInterrupt:
 		print()
-		print(" [!] Detected Ctrl+C. Exiting...")
+		print(f"{Style.RESET_ALL}{Fore.RED} [!] Detected Ctrl+C. Exiting...{Style.RESET_ALL}")
 		print()
 		exit(1)
 	except Exception as e:
