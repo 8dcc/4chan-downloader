@@ -57,7 +57,7 @@ def main():
 			img_tags = souped.find_all('img')
 			for img in img_tags:
 				img_scr = img.get('src')
-				if "vip" in img_scr:
+				if ("vip" in img_scr) or (f"i.4cdn.org/{board}" in img_scr):
 					can_download = True
 				if can_download:
 					if "http" not in img_scr:
@@ -72,7 +72,7 @@ def main():
 							with open("4chan_downloads/" + img_id + ".jpg", "wb") as i:
 								i.write(r2.content)
 			pageNumber += 1
-	
+
 	except KeyboardInterrupt:
 		print()
 		print(" [!] Detected Ctrl+C. Exiting...")
