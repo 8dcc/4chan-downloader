@@ -11,6 +11,7 @@ except Exception:
 
 ############ EDIT ME ############
 useTorProxy = False             #  << Put here True or False
+debugPrint = False              #  << Put here True or False
 #################################
 
 if useTorProxy == False:
@@ -45,7 +46,6 @@ def main():
 		DebugLog.write("[%s] User started.\n" % time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()))
 	print()
 	pageNumber = 1
-	can_download = False
 	images = {"image/jpeg"}
 	try:
 		while True:
@@ -57,16 +57,16 @@ def main():
 			img_tags = souped.find_all('img')
 			for img in img_tags:
 				img_scr = img.get('src')
-				if ("vip" in img_scr) or (f"i.4cdn.org/{board}" in img_scr):
-					can_download = True
-				if can_download:
+				if debugPrint:
+					print(img_scr)
+				if f"i.4cdn.org/{board}" in img_scr:
 					if "http" not in img_scr:
 						img_scr = f"https:{img_scr}"
 						img_id = img_scr.split("/")[-1].split(".")[0].replace("s", "")
 						sys.stdout.write(" [+] Downloading " + img_id + "                                              ")
 						sys.stdout.write('\b'*90)
 						sys.stdout.flush()
-						img_url = "https://i.4cdn.org/lgbt/" + img_id + ".jpg"
+						img_url = "https://i.4cdn.org/" + board + "/" + img_id + ".jpg"
 						r2 = requests.get(img_url)
 						if r2.headers["content-type"] in images:
 							with open("4chan_downloads/" + img_id + ".jpg", "wb") as i:
