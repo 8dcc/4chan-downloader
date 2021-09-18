@@ -61,6 +61,8 @@ def main():
 		DebugLog.write("[%s] User started.\n" % time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()))
 	print()
 	pageNumber = 1
+	img_scr_old = ""
+	double_count = 0
 	images = {"image/jpeg"}
 	try:
 		while True:
@@ -77,6 +79,12 @@ def main():
 			img_tags = souped.find_all('img')
 			for img in img_tags:
 				img_scr = img.get('src')
+				if img_scr_old == img_scr:
+					if double_count > 2:
+						print(f"{Style.RESET_ALL}{Fore.BLUE}     All done.{Style.RESET_ALL}")
+						print(f"{Style.RESET_ALL}{Fore.BLUE}     Stopping at "+ time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()) + f"{Style.RESET_ALL}")
+					else:
+						double_count += 1
 				if debugPrint:
 					print(f"IMG_SCR: {img_scr}\n")
 				if f"i.4cdn.org/{board}" in img_scr:
@@ -104,6 +112,7 @@ def main():
 						if r2.headers["content-type"] in images:
 							with open("4chan_downloads/" + img_id + ".jpg", "wb") as i:
 								i.write(r2.content)
+				img_scr_old = img_scr
 			pageNumber += 1
 
 	except KeyboardInterrupt:
