@@ -35,6 +35,9 @@ def main():
 	check_variable_types()
 	banner()
 
+	if not os.path.exists(os.path.abspath(os.path.dirname(__file__)).replace("\\", "/") + "/4chan_downloads"):
+        os.makedirs(os.path.abspath(os.path.dirname(__file__)).replace("\\", "/") + "/4chan_downloads")
+
 	s = requests.Session() # Create a session because of the cookie
 
 	if useTorProxy == False:
