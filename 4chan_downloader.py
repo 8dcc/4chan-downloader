@@ -4,7 +4,7 @@
 #  https://github.com/r4v10l1
 
 try:
-	import requests, time, sys
+	import requests, time, sys, os
 	from bs4 import BeautifulSoup
 	from colorama import Fore, Style
 except Exception:
