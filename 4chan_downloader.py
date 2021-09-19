@@ -63,7 +63,8 @@ def main():
 	pageNumber = 1
 	img_scr_old = ""
 	double_count = 0
-	images = {"image/jpeg"}
+	extension = ".jpg"
+	images = {"image/jpeg", "image/png"}
 	try:
 		while True:
 			URL = "https://boards.4channel.org/" + board + "/" + str(pageNumber)
@@ -93,7 +94,8 @@ def main():
 						img_id = img_scr.split("/")[-1].split(".")[0].replace("s", "")
 						sys.stdout.write(f"\r {Style.RESET_ALL}{Style.BRIGHT}[{Fore.GREEN}+{Style.RESET_ALL}{Style.BRIGHT}] Downloading {Style.RESET_ALL}{Fore.GREEN}{img_id}{Style.RESET_ALL}")
 						sys.stdout.flush()
-						img_url = "https://i.4cdn.org/" + board + "/" + img_id + ".jpg"
+						extension = ".jpg"
+						img_url = "https://i.4cdn.org/" + board + "/" + img_id + extension
 						if debugPrint:
 							print(f"IMG_URL: {img_url}\n")
 						if sessionMode:
@@ -105,12 +107,12 @@ def main():
 							sys.stdout.write(f"\r {Style.RESET_ALL}{Style.BRIGHT}[{Fore.RED}!{Style.RESET_ALL}{Style.BRIGHT}] 4chan is requesting a human verification for image: {Fore.RED}{img_id}{Style.RESET_ALL}")
 							sys.stdout.flush()
 							print()
+
 						elif "404 Not Found" in r2.text:
-							sys.stdout.write(f"\r {Style.RESET_ALL}{Style.BRIGHT}[{Fore.RED}!{Style.RESET_ALL}{Style.BRIGHT}] 4chan returned 404 for image: {Fore.RED}{img_id}{Style.RESET_ALL}")
-							sys.stdout.flush()
-							print()
+							extension = ".png"
+
 						if r2.headers["content-type"] in images:
-							with open("4chan_downloads/" + img_id + ".jpg", "wb") as i:
+							with open("4chan_downloads/" + img_id + extension, "wb") as i:
 								i.write(r2.content)
 				img_scr_old = img_scr
 			pageNumber += 1
