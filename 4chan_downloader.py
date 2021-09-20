@@ -100,6 +100,7 @@ def main():
 						print(f"{Style.RESET_ALL}{Fore.BLUE}     All done.{Style.RESET_ALL}")
 						print(f"{Style.RESET_ALL}{Fore.BLUE}     Stopping at "+ time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()) + f"{Style.RESET_ALL}")
 						log_user_stop(board)
+						exit(1)
 					else:
 						double_count += 1
 				if debugPrint:
