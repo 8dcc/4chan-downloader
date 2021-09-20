@@ -8,7 +8,7 @@ try:
 	from bs4 import BeautifulSoup
 	from colorama import Fore, Style
 except Exception:
-	exit(" [!] Error importing necesary modules: requests, random, string, time, bs4, sys")
+	exit(" [!] Error importing necesary modules: requests, time, bs4, sys, os, colorama")
 
 ############ EDIT ME ############
 useTorProxy = False             #  << Put here True or False
@@ -30,15 +30,24 @@ def banner():
 	print(f"  /_/  \\___/_/ /_/\\__,_/_/ /_/  {Style.RESET_ALL}{Fore.GREEN}Downloader{Style.RESET_ALL}")
 	print()
 
+def log_user_start(board):
+	with open("4chan_debug.log", "a") as DebugLog:  # Append to the log file
+		DebugLog.write("[%s] User started board: %s\n" % (time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()), board))
+def log_user_stop(board):
+	with open("4chan_debug.log", "a") as DebugLog:  # Append to the log file
+		DebugLog.write("[%s] User stopped board: %s\n" % (time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()), board))
+def log_error_stop(error):
+	with open("4chan_debug.log", "a") as DebugLog:  # Append to the log file
+		DebugLog.write("[%s] Error: %s \n" % (time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()), error))
 
 def main():
 	check_variable_types()
 	banner()
 
 	if not os.path.exists(os.path.abspath(os.path.dirname(__file__)).replace("\\", "/") + "/4chan_downloads"):
-        os.makedirs(os.path.abspath(os.path.dirname(__file__)).replace("\\", "/") + "/4chan_downloads")
+		os.makedirs(os.path.abspath(os.path.dirname(__file__)).replace("\\", "/") + "/4chan_downloads")
 
-	s = requests.Session() # Create a session because of the cookie
+	s = requests.Session()  # Create a session because of the cookie
 
 	if useTorProxy == False:
 		proxies = ""
@@ -58,10 +67,10 @@ def main():
 		print()
 		print(f"{Style.RESET_ALL}{Fore.RED} [!] Detected Ctrl+C. Exiting...{Style.RESET_ALL}")
 		print()
+		log_user_stop("None")
 		exit(1)
 	print(f"{Style.RESET_ALL}{Fore.BLUE}     Starting at "+ time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()) + f"{Style.RESET_ALL}")
-	with open("4chan_debug.log", "a") as DebugLog:  # Append to the log file
-		DebugLog.write("[%s] User started.\n" % time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()))
+	log_user_start(board)
 	print()
 	pageNumber = 1
 	img_scr_old = ""
@@ -79,14 +88,18 @@ def main():
 				r = requests.get(URL, proxies=proxies, allow_redirects=True)
 			if "Attention Required! | Cloudflare" in r.text:
 				exit(f" {Style.RESET_ALL}{Fore.RED}[!] Cloudflare captcha needed. Exiting...{Style.RESET_ALL}")
+				log_user_stop(board)
 			souped = BeautifulSoup(r.text, 'html.parser')
 			img_tags = souped.find_all('img')
 			for img in img_tags:
 				img_scr = img.get('src')
 				if img_scr_old == img_scr:
 					if double_count > 2:
+						sys.stdout.flush()
+						print()
 						print(f"{Style.RESET_ALL}{Fore.BLUE}     All done.{Style.RESET_ALL}")
 						print(f"{Style.RESET_ALL}{Fore.BLUE}     Stopping at "+ time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()) + f"{Style.RESET_ALL}")
+						log_user_stop(board)
 					else:
 						double_count += 1
 				if debugPrint:
@@ -124,9 +137,10 @@ def main():
 		print()
 		print(f"{Style.RESET_ALL}{Fore.RED} [!] Detected Ctrl+C. Exiting...{Style.RESET_ALL}")
 		print()
+		log_user_stop(board)
 		exit(1)
 	except Exception as e:
-		with open("4chan_debug.log", "a") as DebugLog:  # Append to the log file
-			DebugLog.write("[%s] Error: %s \n" % (time.strftime("%d %b %Y - %H:%M:%S", time.gmtime()), e))
+		print(" Faltal error. Check the log for details.")
+		log_error_stop(e)
 
 main()
