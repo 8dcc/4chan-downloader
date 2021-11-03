@@ -1,9 +1,16 @@
 # 4chan downloader
-**Downloads all images from a 4chan board. I know, I am addicted to downloads.**
+****
 
-⚠️ If you download a lot of images, you might get banned! I am not responsible at all. A VPN is recommended. ⚠️
+<div align=center>
+    <h1>4chan downloader</h1>
+    <b>Downloads all images from a 4chan board. I know, I am addicted to downloads.</b><br><br>
+    <a href="https://github.com/r4v10l1/4chan_downloader/network/members"><img src="https://img.shields.io/github/forks/r4v10l1/4chan_downloader.svg?style=for-the-badge&logo=4chan&color=67c634&logoColor=67c634" alt="Forks"></a>
+      <a href="https://github.com/r4v10l1/4chan_downloader/stargazers"><img src="https://img.shields.io/github/stars/r4v10l1/4chan_downloader.svg?style=for-the-badge&logo=4chan&color=67c634&logoColor=67c634" alt="Stars"></a>
+</div>
 
-# 
+#
+
+⚠️ If you download a lot of images, you might get banned! I am not responsible at all. ⚠️
 
 ### Installing
 
