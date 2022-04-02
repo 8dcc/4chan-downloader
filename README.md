@@ -15,7 +15,7 @@
 ### Installing
 
 ``` shell
-https://github.com/r4v10l1/4chan_downloader
+https://github.com/r4v10l1/4chan-downloader
 cd 4chan_downloader
 python -m pip install -r requirements.txt
 python3 4chan_downloader.py
